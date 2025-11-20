@@ -53,7 +53,7 @@ const Mytrips = () => {
                       sm:px-10 md:px-32 lg:px-56 xl:px-10 px-5 
                       pt-24 pb-10 gap-5">
 
-        <h2 className='font-bold text-3xl text-white drop-shadow-xl'>
+        <h2 className='font-bold text-3xl text-white drop-shadow-xl flex justify-center'>
           My Trips
         </h2>
 
