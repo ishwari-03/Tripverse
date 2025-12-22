@@ -23,6 +23,6 @@ export async function callGemini(prompt) {
 
   } catch (err) {
     console.error("❌ Gemini Error:", err);
-    return null;
+    throw err;
   }
 }

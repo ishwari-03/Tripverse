@@ -34,6 +34,7 @@ const CreateTrip = () => {
   const [selectedTraveler, setSelectedTraveler] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
 
   const navigate = useNavigate();
@@ -93,42 +94,56 @@ const CreateTrip = () => {
   };
 
   // ---------------- GEMINI + SAVE + NAVIGATION ----------------
-  const generateTrip = async () => {
-    if (!query || !days || !selectedBudget || !selectedTraveler) {
-      alert("Please fill all fields before generating your trip.");
-      return;
-    }
+ const generateTrip = async () => {
+  if (!query || !days || !selectedBudget || !selectedTraveler) {
+    alert("Please fill all fields before generating your trip.");
+    return;
+  }
 
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
+    setErrorMsg(""); // ✅ clear previous message
 
-      const finalPrompt = AI_PROMPT
-        .replace("{location}", query)
-        .replace("{days}", days)
-        .replace("{travelers}", selectedTraveler)
-        .replace("{budget}", selectedBudget);
+    const finalPrompt = AI_PROMPT
+      .replace("{location}", query)
+      .replace("{days}", days)
+      .replace("{travelers}", selectedTraveler)
+      .replace("{budget}", selectedBudget);
 
-      const aiResponse = await callGemini(finalPrompt);
+    const aiResponse = await callGemini(finalPrompt);
 
-      const docId = await saveTrip(aiResponse);
-      setLoading(false);
+    const docId = await saveTrip(aiResponse);
+    setLoading(false);
 
-      if (docId) navigate(`/view-trip/${docId}`);
-    } catch (err) {
-      console.log("❌ AI Error:", err);
-      setLoading(false);
-    }
-  };
+    if (docId) navigate(`/view-trip/${docId}`);
+  } catch (err) {
+    console.log("❌ AI Error:", err);
+
+    // ✅ ADD THIS MESSAGE (THIS IS THE KEY PART)
+    setErrorMsg(
+      "AI generation is temporarily unavailable due to API limits. Please try again later."
+    );
+
+    setLoading(false);
+  }
+};
+
 
   // ---------------- SAVE TRIP ----------------
   const saveTrip = async (TripData) => {
-    try {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const docId = Date.now().toString();
+    
+    if (!TripData) {
+    console.warn("Skipping Firestore save — no trip data");
+    return null;
+  }
 
-      const cleanJSON = TripData.replace(/```json/i, "")
-        .replace(/```/g, "")
-        .trim();
+  try {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const docId = Date.now().toString();
+
+    const cleanJSON = TripData.replace(/```json/i, "")
+      .replace(/```/g, "")
+      .trim();
 
       let parsedAI = {};
       try {
@@ -300,6 +315,7 @@ const CreateTrip = () => {
           {/* BUTTON */}
           <div className="my-20 flex justify-center items-center">
             <Button
+            type="button"
               disabled={loading}
               onClick={handleGenerate}
               className="flex items-center justify-center 
@@ -315,6 +331,15 @@ const CreateTrip = () => {
                 "Generate Trip"
               )}
             </Button>
+            
+
+             {errorMsg && (
+  <div className="fixed bottom-6 right-6 z-[9999] 
+                  bg-yellow-100 border border-yellow-400 
+                  text-yellow-900 px-4 py-3 rounded-lg shadow-xl">
+    ⚠️{errorMsg}
+  </div>
+)}
           </div>
         </div>
 
