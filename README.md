@@ -36,7 +36,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/tripverse.git
+   git clone https://github.com/ishwari-03/Tripverse.git
    ```
 2. Install dependencies:
    ```bash
@@ -55,15 +55,22 @@
    npm run dev
    ```
 
-## 🛡️ The Bulletproof Fallback
-Tripverse features a unique **Multi-Model Fallback** system. If the primary AI model is restricted in your region, the app automatically cycles through alternative Gemini models and eventually a **Concept Demo Mode** to ensure a functional experience every time.
+## ScreenShots
 
-## 🎨 Design Philosophy
-The UI follows a **Cinematic Glassmorphism** approach:
-- **Depth**: High-opacity indigo glass cards to ensure readability against dynamic backgrounds.
-- **Contrast**: Strict adherence to a high-contrast palette (Sunset Gold for actions, White for content).
-- **Motion**: Subtle entrance animations (fade-in, zoom-in) for a professional, alive-feeling interface.
+### Landing Page
+![Landing](./public/screenshots/homepage.png)
+
+### Plan A Trip
+![Create-Link](./public/screenshots/plan-trip.png)
+
+### View Trip
+![View-Trip](./public/screenshots/view-trip-1.png)
+![View-Trip](./public/screenshots/view-trip-2.png)
+
+### My Trips
+![My-Trips](./public/screenshots/my-trip.png)
+
+### Login
+![Login](./public/screenshots/login.png)
 
 ---
-
-Crafted with ✨ by the Tripverse Team.
