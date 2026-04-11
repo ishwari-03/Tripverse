@@ -2,7 +2,6 @@
 
 **Tripverse** is a premium, state-of-the-art travel planning application that leverages the power of Google's Gemini AI to craft high-precision, cinematic travel itineraries. Designed with a "Twilight Adventure" aesthetic, it combines elegant glassmorphism with high-performance AI logic to turn your travel dreams into detailed reality.
 
-![Tripverse Preview](https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1)
 
 ## ✨ Features
 
