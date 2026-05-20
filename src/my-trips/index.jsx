@@ -1,8 +1,9 @@
 import { db } from '@/services/firebaseconfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react'
+import { collection, getDocs, query, where, deleteDoc, doc } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Usertripcarditem from './components/Usertripcarditem';
+import { toast } from 'sonner';
 
 const Mytrips = () => {
 
@@ -35,6 +36,17 @@ const Mytrips = () => {
     setUserTrips(trips);
   };
 
+  const handleDeleteTrip = async (tripId) => {
+    if (!window.confirm("Are you sure you want to delete this trip?")) return;
+    try {
+      await deleteDoc(doc(db, "AITrips", tripId));
+      setUserTrips(prev => prev.filter(trip => trip.id !== tripId));
+      toast.success("Trip deleted successfully");
+    } catch (err) {
+      console.log(err);
+      toast.error("Error deleting trip");
+    }
+  };
 
   return (
     <div
@@ -61,7 +73,7 @@ const Mytrips = () => {
                   key={trip.id}
                   className="animate-in fade-in zoom-in duration-500"
                 >
-                  <Usertripcarditem trip={trip} />
+                  <Usertripcarditem trip={trip} onDelete={() => handleDeleteTrip(trip.id)} />
                 </div>
               ))
             : Array.from({ length: 6 }).map((_, index) => (

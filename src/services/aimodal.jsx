@@ -5,6 +5,9 @@ const genAI = new GoogleGenerativeAI(apiKey);
 
 // List of models to try in sequence if others fail
 const MODEL_CANDIDATES = [
+  "gemini-2.5-flash",
+  "gemini-2.5-pro",
+  "gemini-2.0-flash",
   "gemini-1.5-flash",
   "gemini-1.5-flash-latest",
   "gemini-1.5-pro",

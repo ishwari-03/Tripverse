@@ -3,7 +3,7 @@ import { fetchUnsplashImage } from "@/services/GlobalAPI";
 import { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 
-const Usertripcarditem = ({ trip }) => {
+const Usertripcarditem = ({ trip, onDelete }) => {
   const [image, setImage] = useState("/placeholder.jpg");
   
     useEffect(() => {
@@ -26,8 +26,20 @@ const Usertripcarditem = ({ trip }) => {
     };
 
   return (
-    <Link to={'/view-trip/' + trip?.id}>
-      <div className='glass-card group hover:scale-[1.03] transition-all duration-300 h-full flex flex-col overflow-hidden border-white/5'>
+    <div className='relative h-full group'>
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (onDelete) onDelete();
+        }}
+        className="absolute top-4 right-4 z-20 p-2 bg-red-500/80 hover:bg-red-600 text-white rounded-xl opacity-0 group-hover:opacity-100 transition-opacity shadow-lg backdrop-blur-md"
+        title="Delete Trip"
+      >
+        🗑️
+      </button>
+      <Link to={'/view-trip/' + trip?.id} className="block h-full">
+        <div className='glass-card hover:scale-[1.03] transition-all duration-300 h-full flex flex-col overflow-hidden border-white/5'>
         <div className="relative overflow-hidden">
           <img
             src={image}
@@ -54,7 +66,8 @@ const Usertripcarditem = ({ trip }) => {
           </div>
         </div>
       </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 

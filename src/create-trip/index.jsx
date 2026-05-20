@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import {
   selectbudgetoptions,
@@ -38,19 +38,31 @@ const CreateTrip = () => {
 
   const API_KEY = import.meta.env.VITE_GEOAPIFY_KEY;
 
-  const fetchPlaces = async (value) => {
+  const timeoutRef = useRef(null);
+
+  const handleInputChange = (value) => {
     setQuery(value);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    
     if (value.length < 2) {
       setResults([]);
       return;
     }
-    const res = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${value}&apiKey=${API_KEY}`);
-    const data = await res.json();
-    setResults(data.features || []);
+    
+    timeoutRef.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://api.geoapify.com/v1/geocode/autocomplete?text=${value}&apiKey=${API_KEY}`);
+        const data = await res.json();
+        setResults(data.features || []);
+      } catch (err) {
+        console.error("Geocoding API error:", err);
+      }
+    }, 400);
   };
 
   const choosePlace = (place) => {
     setQuery(place.properties.formatted);
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setResults([]);
   };
 
@@ -173,7 +185,7 @@ const CreateTrip = () => {
               <div className="relative">
                 <input
                   value={query}
-                  onChange={(e) => fetchPlaces(e.target.value)}
+                  onChange={(e) => handleInputChange(e.target.value)}
                   placeholder="e.g. Kyoto, Japan"
                   className="w-full p-4 rounded-2xl bg-white/5 border border-white/10 text-white focus:border-amber-500/50 focus:bg-white/10 transition-all outline-none"
                 />
