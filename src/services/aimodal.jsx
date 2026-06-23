@@ -44,12 +44,24 @@ export async function callGemini(prompt) {
       }
     } catch (err) {
       lastError = err;
+      const msg = (err.message || "").toLowerCase();
       console.warn(`⚠️ Model ${modelId} failed:`, err.message || err);
-      // If it's not a 404 (e.g. invalid key), no point in trying other models
-      if (!err.message?.includes("404") && !err.message?.includes("not found")) {
+
+      // Treat client/auth/model-not-found errors as fatal (don't try other models).
+      // For transient/server errors (5xx, rate limits, high demand) continue to next model.
+      const fatalIndicators = ["404", "not found", "401", "403", "invalid", "permission", "not authorized", "access denied", "invalid api key", "invalid key"];
+      const isFatal = fatalIndicators.some(ind => msg.includes(ind));
+      if (isFatal) {
         break;
       }
-      continue; 
+
+      // Transient error: wait a bit and try next model in the list
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 600));
+      } catch (e) {
+        // ignore
+      }
+      continue;
     }
   }
 
